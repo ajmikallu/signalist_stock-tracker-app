@@ -168,7 +168,7 @@ declare global {
         news?: MarketNewsArticle[];
     };
 
-    type SearchCommandProps = {
+    type SearchCommandDialogProps = {
         open?: boolean;
         setOpen?: (open: boolean) => void;
         renderAs?: 'button' | 'text';
