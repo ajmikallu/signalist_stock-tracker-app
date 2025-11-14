@@ -4,7 +4,7 @@ import {
     MARKET_DATA_WIDGET_CONFIG,
     MARKET_OVERVIEW_WIDGET_CONFIG,
     TOP_STORIES_WIDGET_CONFIG
-} from "@/lib/Constants";
+} from "@/lib/constants";
 
 
 const Home = () => {
