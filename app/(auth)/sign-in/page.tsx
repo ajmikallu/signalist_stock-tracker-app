@@ -29,7 +29,7 @@ const SignIn = () => {
                 if(result.success) {
                     router.push('/');
                 } else if (result.error) {
-                    toast.error('Sign up failed', {
+                    toast.error('Sign ip failed', {
                         description: result.error
                     });
                 }

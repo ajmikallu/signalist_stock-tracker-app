@@ -64,7 +64,13 @@ const SignUp = () => {
                     placeholder="contact@jsmastery.com"
                     register={register}
                     error={errors.email}
-                    validation={{ required: 'Email is required', pattern: { value: /^\S+@\S+\.\S+$/, message: 'Invalid email address' } }}
+                    validation={{
+                        required: 'Email is required',
+                        pattern: {
+                        value: /^\S+@\S+\.\S+$/,
+                        message: 'Invalid email address'
+                    }
+                    }}
                 />
 
                 <InputField
