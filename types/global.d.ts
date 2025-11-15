@@ -28,6 +28,14 @@ declare global {
         email: string;
     };
 
+    type CountrySelectProps = {
+        name: string;
+        label: string;
+        control: Control<any>;
+        error?: FieldError;
+        required?: boolean;
+    };
+
     //
     type StockData = {
         symbol: string;
