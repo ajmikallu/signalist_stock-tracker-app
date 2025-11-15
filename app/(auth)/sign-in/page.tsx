@@ -56,10 +56,10 @@ const SignIn = () => {
                     placeholder='Enter your email'
                     error={errors.email}
                     validation={{
-                       required: 'Email is required',
-                       pattern: {
-                       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                       message: 'Please enter a valid email address'
+                        required: 'Email is required',
+                        pattern: {
+                            value: /^\S+@\S+\.\S+$/,
+                            message: 'Invalid email address'
                        }
                 }}
                 />
