@@ -1,7 +1,7 @@
 'use server'
 import {connectToDatabase} from "@/database/mongoose";
 
-export const getAllUsersForNewsEmail = async () =>{
+export const getAllUsersForNewsEmail = async (): Promise<UserForNewsEmail[]> => {
     try{
         const mongoose = await connectToDatabase();
         const db = mongoose.connection.db;
@@ -10,14 +10,23 @@ export const getAllUsersForNewsEmail = async () =>{
             { email: { $exists: true, $ne: null }},
             { projection: { _id: 1, id: 1, email: 1, name: 1, country:1 }}
         ).toArray();
-        return users.filter(user => user.email && user.name ).map((user)=> ({
-            id: user.id || user._id?.toString() || '',
-            email: user.email,
-            name: user.name
-        }));
+        return users
+            .filter((user) => user.email && user.name)
+            .map((user) => {
+                const id = user.id || user._id?.toString() || '';
+                if (!id) return null;
+                return {
+                    id,
+                    email: user.email,
+                    name: user.name,
+                    country: user.country ?? '',
+                } satisfies UserForNewsEmail;
+            })
+            .filter((u): u is UserForNewsEmail => u !== null);
 
     } catch (e) {
-        console.log('Error fetching users', e);
+        console.error('Error fetching users', e);
         return [];
     }
+}
 }
