@@ -24,10 +24,15 @@ const SignIn = () => {
     })
     const onSubmit = async(data:SignInFormData) => {
 
-            console.log(data);
         try{
             const result = await signInWithEmail(data)
-            if(result.success) router.push('/')
+                if(result.success) {
+                    router.push('/');
+                } else if (result.error) {
+                    toast.error('Sign up failed', {
+                        description: result.error
+                    });
+                }
 
         } catch(error){
             console.error(error)
@@ -50,8 +55,13 @@ const SignIn = () => {
                     register={register}
                     placeholder='Enter your email'
                     error={errors.email}
-                    validation={{required:'email is required', pattern:/^\w+@\w+\.\w+$/, message: 'Email address is required'}}
-                    // validation={{ required: 'Email is required', pattern: /^\w+@\w+\.\w+$/ }}
+                    validation={{
+                       required: 'Email is required',
+                       pattern: {
+                       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                       message: 'Please enter a valid email address'
+                       }
+                }}
                 />
                 <InputField
                     name="password"

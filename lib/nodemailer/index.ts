@@ -1,11 +1,18 @@
 import nodemailer from 'nodemailer';
 import {WELCOME_EMAIL_TEMPLATE, NEWS_SUMMARY_EMAIL_TEMPLATE} from "@/lib/nodemailer/templates";
 
+if (!process.env.NODEMAILER_EMAIL) {
+    throw new Error('NODEMAILER_EMAIL environment variable is required');
+}
+if (!process.env.NODEMAILER_PASSWORD) {
+    throw new Error('NODEMAILER_PASSWORD environment variable is required');
+}
+
 export const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.NODEMAILER_EMAIL!,
-        pass: process.env.NODEMAILER_PASSWORD!,
+        user: process.env.NODEMAILER_EMAIL,
+        pass: process.env.NODEMAILER_PASSWORD,
     }
 })
 
