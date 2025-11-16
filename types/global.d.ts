@@ -81,6 +81,14 @@ declare global {
         initialNews?: MarketNewsArticle[]; // Initial news data
     };
 
+
+
+    type SearchCommandProps = {
+        renderAs?: 'button' | 'text';
+        label?: string;
+        initialStocks: StockWithWatchlistStatus[];
+    };
+
     type SearchCommandProps = {
         open?: boolean;
         setOpen?: (open: boolean) => void;
@@ -95,6 +103,11 @@ declare global {
         alertType: 'price' | 'volume';
         condition: 'greater' | 'less';
         threshold: string;
+    };
+
+    type FinnhubSearchResponse = {
+        count: number;
+        result: FinnhubSearchResult[];
     };
 
     type AlertData = {
