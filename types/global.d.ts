@@ -98,6 +98,21 @@ declare global {
         className?: string;
     };
 
+    type WatchlistButtonProps = {
+        symbol: string;
+        company: string;
+        isInWatchlist: boolean;
+        showTrashIcon?: boolean;
+        type?: 'button' | 'icon';
+        onWatchlistChange?: (symbol: string, isAdded: boolean) => void;
+    };
+
+    type StockDetailsPageProps = {
+        params: Promise<{
+            symbol: string;
+        }>;
+    };
+
     type AlertFormData = {
         alertName: string;
         alertType: 'price' | 'volume';
