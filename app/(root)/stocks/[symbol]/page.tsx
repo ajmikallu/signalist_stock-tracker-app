@@ -8,10 +8,21 @@ import {
     COMPANY_PROFILE_WIDGET_CONFIG,
     COMPANY_FINANCIALS_WIDGET_CONFIG,
 } from "@/lib/constants";
+import { getWatchlistSymbolsByEmail, onWatchlistChange } from "@/lib/actions/watchlist.actions";
+import { getCurrentUserEmail } from '@/lib/actions/auth.utils';
 
 export default async function StockDetails({ params }: StockDetailsPageProps) {
     const { symbol } = await  params;
+    const upperSymbol = symbol.toUpperCase();
+    const company = upperSymbol;
+
+    // Determine initial watchlist status for the current user
+    const email = await getCurrentUserEmail();
+    const userSymbols = await getWatchlistSymbolsByEmail(email);
+    const isInWatchlist = userSymbols.includes(upperSymbol);
+
     const scriptUrl = `https://s3.tradingview.com/external-embedding/embed-widget-`;
+
     return (
         <div className="flex min-h-screen p-4 md:p-6 lg:p-8">
             <section className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
@@ -38,7 +49,12 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
                 {/* Right column */}
                 <div className="flex flex-col gap-6">
                     <div className="flex items-center justify-between">
-                        <WatchlistButton symbol={symbol.toUpperCase()} company={symbol.toUpperCase()} isInWatchlist={false} />
+                        <WatchlistButton
+                            symbol={upperSymbol}
+                            company={company}
+                            isInWatchlist={isInWatchlist}
+                            onWatchlistChange={onWatchlistChange}
+                        />
                     </div>
 
                     <TradingViewWidget
