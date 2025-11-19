@@ -8,7 +8,7 @@ const  WatchList = async () => {
 
     const email = await getCurrentUserEmail()
     const watchlist = await getWatchlistSymbolsByEmail(email)
-    const detailedStockData: any = await getDetailedStockDatas(watchlist);
+    const detailedStockData: StockDataResult[] = await getDetailedStockDatas(watchlist);
     return (
 
         <div className="flex min-h-screen flex-col p-4 md:p-6 lg:p-8">
@@ -17,7 +17,6 @@ const  WatchList = async () => {
                     <WatchlistTable stocks={detailedStockData}/>
                 </div>
                 <div className="flex flex-col md:col-span-1">
-                    <h1>jbhh</h1>
                 </div>
             </section>
 
@@ -27,7 +26,7 @@ const  WatchList = async () => {
                     <div className="bg-gray-800 p-4 rounded-lg shadow-md">
                         <div className="flex justify-between items-center mb-2">
                             <p className="text-sm font-medium">Total Stocks</p>
-                            <p className="text-lg font-semibold">120</p>
+                            <p className="text-lg font-semibold">{watchlist.length}</p>
                         </div>
                     </div>
                 </div>
