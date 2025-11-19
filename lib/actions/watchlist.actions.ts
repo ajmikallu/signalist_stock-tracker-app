@@ -79,11 +79,11 @@ export async function removeFromWatchlist(symbol: string): Promise<{ success: bo
     }
 }
 
-export async function onWatchlistChange(symbol: string, isAdded: boolean)
+export async function onWatchlistChange(symbol: string, isAdded: boolean): Promise<{ success: boolean; error?: string }>
 {
     if (isAdded) {
-        await addToWatchlist(symbol);
+        return await addToWatchlist(symbol);
     } else {
-        await removeFromWatchlist(symbol);
+        return await removeFromWatchlist(symbol);
     }
 }
