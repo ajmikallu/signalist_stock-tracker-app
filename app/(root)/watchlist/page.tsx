@@ -1,7 +1,7 @@
 
 
 import WatchlistTable from '@/components/WatchListTable';
-import {getDetailedStockDatas, StockDataResult} from "@/lib/actions/finnhub.actions";
+import {getDetailedStockDatas} from "@/lib/actions/finnhub.actions";
 import {getWatchlistSymbolsByEmail} from "@/lib/actions/watchlist.actions";
 import {getCurrentUserEmail} from "@/lib/actions/auth.utils";
 const  WatchList = async () => {
@@ -9,6 +9,7 @@ const  WatchList = async () => {
     const email = await getCurrentUserEmail()
     const watchlist = await getWatchlistSymbolsByEmail(email)
     const detailedStockData: StockDataResult[] = await getDetailedStockDatas(watchlist);
+    console.log(detailedStockData);
     return (
 
         <div className="flex min-h-screen flex-col p-4 md:p-6 lg:p-8">

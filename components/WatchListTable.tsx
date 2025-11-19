@@ -4,20 +4,40 @@ import { Trash2, Bell } from 'lucide-react';
 import { useState } from 'react';
 import {Button} from "@/components/ui/button";
 import {removeFromWatchlist} from "@/lib/actions/watchlist.actions";
+import { toast } from "sonner";
 
 
 
 
 export default function WatchlistTable({stocks= []}: WatchlistTableProps) {
     const [watchlist, setWatchlist] = useState(stocks);
+    // Track which symbols are currently being removed to avoid duplicate actions
+    const [removingSymbols, setRemovingSymbols] = useState<Set<string>>(new Set());
 
-    const handleRemove = (symbol:string  ) => {
-        // alert(`Alert added for ${symbol}`);
+    const handleRemove = async (symbol: string) => {
+        // If already removing this symbol, ignore further clicks
+        if (removingSymbols.has(symbol)) return;
 
-        removeFromWatchlist(symbol).then(() => {
-            setWatchlist(prev => prev.filter(stock => stock.symbol !== symbol));
+        setRemovingSymbols((prev) => new Set(prev).add(symbol));
+        try {
+            const res = await removeFromWatchlist(symbol);
+            if (res?.success) {
+                setWatchlist((prev) => prev.filter((stock) => stock.symbol !== symbol));
+                toast.success(`${symbol} removed from watchlist`);
+            } else {
+                const message = res?.error || 'Failed to remove from watchlist';
+                toast.error(message);
+                // On failure, keep item in state (no change)
+            }
+        } catch (error) {
+            toast.error('An unexpected error occurred while removing the stock');
+        } finally {
+            setRemovingSymbols((prev) => {
+                const next = new Set(prev);
+                next.delete(symbol);
+                return next;
+            });
         }
-        )
     };
 
     const handleAddAlert = (symbol : string) => {
@@ -190,7 +210,8 @@ export default function WatchlistTable({stocks= []}: WatchlistTableProps) {
                                                     onClick={() =>
                                                         handleRemove(stock.symbol)
                                                     }
-                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                                                    className={`p-2 rounded-lg transition ${removingSymbols.has(stock.symbol) ? 'text-red-300 cursor-not-allowed' : 'text-red-600 hover:bg-red-50'}`}
+                                                    disabled={removingSymbols.has(stock.symbol)}
                                                     title="Remove from Watchlist"
                                                 >
                                                     <Trash2 size={18} />
