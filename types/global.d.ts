@@ -327,8 +327,7 @@ declare global {
         website: string;
         description: string;
     };
-
-    type Stock = {
+    type WatchlistStock = {
         symbol: string;
         company?: string;
         price?: number;
@@ -338,7 +337,13 @@ declare global {
         data?: any;
     }
     type WatchlistTableProps = {
-        stocks: Stock[];
+        stocks: WatchlistStock[];
+    }
+
+    type StockDataResult = {
+        symbol: string;
+        data: any;
+        error?: string;
     }
 }
 

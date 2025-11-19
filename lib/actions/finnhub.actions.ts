@@ -179,11 +179,6 @@ export const searchStocks = cache(async (query?: string): Promise<StockWithWatch
     }
 });
 
-export interface StockDataResult {
-    symbol: string;
-    data: any;
-    error?: string;
-}
 
 export async function getDetailedStockDatas(
     symbols: string[]

@@ -1,7 +1,7 @@
 
 
 import WatchlistTable from '@/components/WatchListTable';
-import {getDetailedStockDatas, StockDataResult} from "@/lib/actions/finnhub.actions";
+import {getDetailedStockDatas} from "@/lib/actions/finnhub.actions";
 import {getWatchlistSymbolsByEmail} from "@/lib/actions/watchlist.actions";
 import {getCurrentUserEmail} from "@/lib/actions/auth.utils";
 const  WatchList = async () => {
