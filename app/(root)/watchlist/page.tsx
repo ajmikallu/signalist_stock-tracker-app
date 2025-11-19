@@ -9,7 +9,6 @@ const  WatchList = async () => {
     const email = await getCurrentUserEmail()
     const watchlist = await getWatchlistSymbolsByEmail(email)
     const detailedStockData: StockDataResult[] = await getDetailedStockDatas(watchlist);
-    console.log(detailedStockData);
     return (
 
         <div className="flex min-h-screen flex-col p-4 md:p-6 lg:p-8">
