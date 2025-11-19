@@ -312,6 +312,34 @@ declare global {
         href: string;
     };
 
+    type DetailedStockData = {
+        symbol: string;
+        company: string;
+        country: string;
+        currentPrice: number;
+        change: number;
+        changePercent: number;
+        marketCap: number | null;
+        peRatio: number | null;
+        dividendYield: number | null;
+        eps: number | null;
+        industry: string;
+        website: string;
+        description: string;
+    };
+
+    type Stock = {
+        symbol: string;
+        company?: string;
+        price?: number;
+        change?: number;
+        marketCap?: string;
+        peRatio?: number;
+        data?: any;
+    }
+    type WatchlistTableProps = {
+        stocks: Stock[];
+    }
 }
 
 export {};

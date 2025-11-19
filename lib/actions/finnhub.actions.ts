@@ -178,3 +178,174 @@ export const searchStocks = cache(async (query?: string): Promise<StockWithWatch
         return [];
     }
 });
+
+export interface StockDataResult {
+    symbol: string;
+    data: any;
+    error?: string;
+}
+
+export async function getDetailedStockDatas(
+    symbols: string[]
+): Promise<StockDataResult[]> {
+    try {
+        // Fetch all stocks in parallel
+        const dataPromises = symbols.map(async (symbol) => {
+            try {
+                const data = await getDetailedStockData(symbol);
+                return {
+                    symbol,
+                    data,
+                };
+            } catch (error) {
+                return {
+                    symbol,
+                    data: null,
+                    error: error instanceof Error ? error.message : 'Unknown error',
+                };
+            }
+        });
+
+        return await Promise.all(dataPromises);
+    } catch (error) {
+        console.error('Failed to get detailed stock data:', error);
+        return [];
+    }
+}
+
+export async function getDetailedStockData(
+    symbol: string
+): Promise<Omit<DetailedStockData, 'symbol' | 'company' > | null> {
+    const apiKey = process.env.FINNHUB_API_KEY??NEXT_PUBLIC_FINNHUB_API_KEY;
+
+    if (!apiKey) {
+        throw new Error('Finnhub API key not configured');
+    }
+
+    try {
+        // Fetch multiple endpoints in parallel
+        const [quoteData, profileData, metricsData] = await Promise.all([
+            fetchQuoteData(symbol, apiKey),
+            fetchProfileData(symbol, apiKey),
+            fetchMetricsData(symbol, apiKey),
+        ]);
+
+        return {
+            ...quoteData,
+            ...profileData,
+            ...metricsData,
+        };
+    } catch (error) {
+        console.error(`Failed to get detailed data for ${symbol}:`, error);
+        return null;
+    }
+}
+
+export async function fetchQuoteData(
+    symbol: string,
+    apiKey: string
+): Promise<{
+    currentPrice: number;
+    change: number;
+    changePercent: number;
+}> {
+    try {
+        const response = await fetch(
+            `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`
+        );
+
+        if (!response.ok) {
+            throw new Error(`Quote API error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        return {
+            currentPrice: data.c || 0,
+            change: data.d || 0,
+            changePercent: data.dp || 0,
+        };
+    } catch (error) {
+        console.error(`Failed to fetch quote for ${symbol}:`, error);
+        return {
+            currentPrice: 0,
+            change: 0,
+            changePercent: 0,
+        };
+    }
+}
+
+export async function fetchProfileData(
+    symbol: string,
+    apiKey: string
+): Promise<{
+    country: string;
+    industry: string;
+    website: string;
+    description: string;
+}> {
+    try {
+        const response = await fetch(
+            `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${apiKey}`
+        );
+
+        if (!response.ok) {
+            throw new Error(`Profile API error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        return {
+            country: data.country || 'N/A',
+            industry: data.finnhubIndustry || 'N/A',
+            website: data.weburl || '',
+            description: data.description || '',
+        };
+    } catch (error) {
+        console.error(`Failed to fetch profile for ${symbol}:`, error);
+        return {
+            country: 'N/A',
+            industry: 'N/A',
+            website: '',
+            description: '',
+        };
+    }
+}
+
+export async function fetchMetricsData(
+    symbol: string,
+    apiKey: string
+): Promise<{
+    marketCap: number | null;
+    peRatio: number | null;
+    dividendYield: number | null;
+    eps: number | null;
+}> {
+    try {
+        const response = await fetch(
+            `https://finnhub.io/api/v1/stock/metric?symbol=${symbol}&metric=all&token=${apiKey}`
+        );
+
+        if (!response.ok) {
+            throw new Error(`Metrics API error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        const metrics = data.metric || {};
+
+        return {
+            marketCap: metrics.marketCapitalization || null,
+            peRatio: metrics.peNormalizedAnnual || null,
+            dividendYield: metrics.dividendYieldIndicatedAnnual || null,
+            eps: metrics.epsBasicExclExtraord || null,
+        };
+    } catch (error) {
+        console.error(`Failed to fetch metrics for ${symbol}:`, error);
+        return {
+            marketCap: null,
+            peRatio: null,
+            dividendYield: null,
+            eps: null,
+        };
+    }
+}
